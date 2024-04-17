@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+  products-service:
+    build: ./products-service
+    ports:
+      - "8081:5000"
+    depends_on:
+      - products-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://products-db:5432/products
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+
+  orders-service:
+    build: ./orders-service
+    ports:
+      - "8082:8080"
+    depends_on:
+      - orders-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://orders-db:5432/orders
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+
+  products-db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: products
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
+
+  orders-db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: orders
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5434:5432"
+
+  admin-service:
+    build: ./admin-service
+    ports:
+      - "8083:8080"
+    depends_on:
+      - admin-db
+
+  admin-db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: admin
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5435:5432"
